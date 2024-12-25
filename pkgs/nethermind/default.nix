@@ -12,13 +12,13 @@
 }: let
   self = buildDotnetModule rec {
     pname = "nethermind";
-    version = "1.25.4";
+    version = "1.30.0";
 
     src = fetchFromGitHub {
       owner = "NethermindEth";
       repo = pname;
       rev = version;
-      hash = "sha256-J0kvmj6yG7tUv16nDfQ14mmKnGgJ/Gshkf8wCFRs1B0=";
+      hash = "sha256-dNnkoJQs4LjZ/2PKOiy/XN6UKOBAHqDMqlxQUZxstJc=";
       fetchSubmodules = true;
     };
 
@@ -34,10 +34,6 @@
       snappy
     ];
 
-    patches = [
-      ./001-Remove-Commit-Fallback.patch
-    ];
-
     projectFile = "src/Nethermind/Nethermind.sln";
     nugetDeps = ./nuget-deps.nix;
 
@@ -46,13 +42,13 @@
       "nethermind"
     ];
 
-    dotnet-sdk = dotnetCorePackages.sdk_8_0;
-    dotnet-runtime = dotnetCorePackages.aspnetcore_8_0;
+    dotnet-sdk = dotnetCorePackages.sdk_9_0;
+    dotnet-runtime = dotnetCorePackages.aspnetcore_9_0;
 
     passthru = {
       # buildDotnetModule's `fetch-deps` uses `writeShellScript` instead of writeShellScriptBin making nix run .#nethermind.fetch-deps command to fail
       # This alias solves that issue. On parent folder, we only need to run this command to produce a new nuget-deps.nix file with updated deps:
-      # $ nix run .#nethermind.fetch-nethermind-deps $PRJ_ROOT/pkgs/nethermind/nuget-deps.nix
+      # $ nix run .#nethermind.fetch-nethermind-deps pkgs/nethermind/nuget-deps.nix
       fetch-nethermind-deps = writeShellScriptBin "fetch-nethermind-deps" ''${self.fetch-deps} $@'';
     };
 
