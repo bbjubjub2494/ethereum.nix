@@ -27,30 +27,22 @@
 in
   rustPlatform.buildRustPackage rec {
     pname = "lighthouse";
-    version = "6.0.1";
+    version = "7.0.0";
 
     src = fetchFromGitHub {
       owner = "sigp";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-8jHNm/MGpHGOt52rLMXLMWIVn8AXqnpAr+Wvk7DH6gc=";
+      hash = "sha256-sO8ngB1sFmJACjc8yMYqeX7oWeGAm7dK5ivXt/DmKjk=";
     };
 
-    patches = [
-      ./use-system-sqlite.patch
-    ];
-
-    postPatch = ''
-      cp ${./Cargo.lock} Cargo.lock
-    '';
-
     cargoLock = {
-      lockFile = ./Cargo.lock;
+      lockFile = "${src}/Cargo.lock";
       outputHashes = {
         "quick-protobuf-0.8.1" = "sha256-dgePLYCeoEZz5DGaLifhf3gEIPaL7XB0QT9wRKY8LJg=";
         "libmdbx-0.1.4" = "sha256-ONp4uPkVCN84MObjXorCZuSjnM6uFSMXK1vdJiX074o=";
         "lmdb-rkv-0.14.0" = "sha256-sxmguwqqcyOlfXOZogVz1OLxfJPo+Q0+UjkROkbbOCk=";
-        "xdelta3-0.1.5" = "sha256-3ZZ2SDaOT8IOymgJaBCh9GNU5wpYgZnb51kN5sMsFLk=";
+        "xdelta3-0.1.5" = "sha256-aewSexOZCrQoKZQa+SGP8i6JKXstaxF3W2LVEhCSmPs=";
       };
     };
 
