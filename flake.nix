@@ -68,7 +68,7 @@
       ];
 
       # disable the default job since buildbot already builds everything
-      flake.herculesCI.onPush.default.enable = false;
+      herculesCI.onPush.default.outputs = lib.mkForce {};
       systems = import systems;
       perSystem = {
         config,
