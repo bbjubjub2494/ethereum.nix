@@ -66,6 +66,9 @@
         ./pkgs
         ./flake-update.nix
       ];
+
+      # disable the default job since buildbot already builds everything
+      flake.herculesCI.onPush.default = {};
       systems = import systems;
       perSystem = {
         config,
