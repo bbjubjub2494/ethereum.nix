@@ -3,5 +3,6 @@
 {
   hercules-ci.flake-update = {
     enable = true;
+    when.minute = 20;
   };
 }
