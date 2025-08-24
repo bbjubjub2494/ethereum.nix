@@ -68,7 +68,7 @@
       ];
 
       # disable the default job since buildbot already builds everything
-      herculesCI.onPush.default.enable = false;
+      hercules-ci.onPush.default.enable = false;
       systems = import systems;
       perSystem = {
         config,
