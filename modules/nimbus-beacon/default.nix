@@ -121,6 +121,7 @@ in {
                 "--keymanager-token-file"
                 "--keymanager-address"
                 "--keymanager-port"
+                "--trusted-block-root"
                 "--trusted-node-url" # only needed for checkpoint sync
               ];
               isNormalArg = name: (findFirst (arg: hasPrefix arg name) null specialArgs) == null;
@@ -187,16 +188,18 @@ in {
                     then cfg.args.user
                     else user;
                   StateDirectory = user;
-                  ExecStartPre = lib.mkBefore [
-                    ''                      ${pkgs.coreutils-full}/bin/cp --no-preserve=all --update=none \
-                      /proc/sys/kernel/random/uuid ${data-dir}/${cfg.args.keymanager.token-file}''
-                    "${cfg.package}/bin/${bin} trustedNodeSync ${checkpointSyncArgs}"
-                  ];
                   ExecStart = "${cfg.package}/bin/${bin} ${scriptArgs}";
                 }
                 baseServiceConfig
                 (mkIf (cfg.args.jwt-secret != null) {
                   LoadCredential = ["jwt-secret:${cfg.args.jwt-secret}"];
+                })
+                (lib.mkIf (cfg.args.trusted-block-root == null) {
+                  ExecStartPre = lib.mkBefore [
+                    ''                      ${pkgs.coreutils-full}/bin/cp --no-preserve=all --update=none \
+                      /proc/sys/kernel/random/uuid ${data-dir}/${cfg.args.keymanager.token-file}''
+                    "${cfg.package}/bin/${bin} trustedNodeSync ${checkpointSyncArgs}"
+                  ];
                 })
               ];
             })

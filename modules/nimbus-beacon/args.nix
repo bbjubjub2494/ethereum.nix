@@ -69,6 +69,14 @@ with lib; {
     example = "https://checkpoint-sync.goerli.ethpandaops.io";
   };
 
+  trusted-block-root = mkOption {
+    type = types.nullOr types.str;
+    default = null;
+    description = ''
+      hash of a beacon state root obtained from a trusted source."
+    '';
+  };
+
   max-peers = mkOption {
     type = types.str;
     default = "160";
