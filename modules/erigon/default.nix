@@ -92,27 +92,35 @@ in {
               ${lib.escapeShellArgs cfg.extraArgs}
             '';
           in
-            nameValuePair serviceName (mkIf cfg.enable {
-              description = "Erigon Ethereum node (${erigonName})";
-              wantedBy = ["multi-user.target"];
-              after = ["network.target"];
+            nameValuePair serviceName (mkIf cfg.enable (mkMerge [
+              {
+                description = "Erigon Ethereum node (${erigonName})";
+                wantedBy = ["multi-user.target"];
+                after = ["network.target"];
 
-              # create service config by merging with the base config
-              serviceConfig = mkMerge [
-                baseServiceConfig
-                {
-                  User = serviceName;
-                  StateDirectory = serviceName;
-                  ExecStartPre = mkIf cfg.subVolume (mkBefore [
-                    "+${scripts.setupSubVolume} /var/lib/private/${serviceName}"
-                  ]);
-                  ExecStart = "${cfg.package}/bin/erigon ${scriptArgs}";
+                # create service config by merging with the base config
+                serviceConfig = mkMerge [
+                  baseServiceConfig
+                  {
+                    User = serviceName;
+                    StateDirectory = serviceName;
+                    ExecStartPre = mkIf cfg.subVolume (mkBefore [
+                      "+${scripts.setupSubVolume} /var/lib/private/${serviceName}"
+                    ]);
+                    ExecStart = "${cfg.package}/bin/erigon ${scriptArgs}";
 
-                  # Erigon needs this system call for some reason
-                  SystemCallFilter = ["@system-service" "~@privileged" "mincore"];
-                }
-              ];
-            })
+                    # Erigon needs this system call for some reason
+                    SystemCallFilter = ["@system-service" "~@privileged" "mincore"];
+                  }
+                ];
+              }
+              (mkIf (cfg.args.chain != "gnosis") {
+                # disable the soft fork to censor the Balancer exploiter
+                # it's relevant only on Gnosis Chain, breaks synchronisation otherwise.
+                # https://github.com/erigontech/erigon/blob/99621ed9c9bccd215173eb3d3f24bb8969b51025/core/blocks.go
+                environment.GNOSIS_EL_PATCH_TIME = "disabled";
+              })
+            ]))
       )
       eachErigon;
   };
