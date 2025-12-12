@@ -50,6 +50,7 @@
         ];
       });
       geth = callPackage ./by-name/geth {};
+      grandine = callPackageUnstable ./grandine {};
       heimdall = callPackageUnstable ./by-name/heimdall {};
       kurtosis = callPackage ./by-name/kurtosis {};
       lighthouse = callPackageUnstable ./by-name/lighthouse {inherit foundry;};
