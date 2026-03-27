@@ -1,5 +1,5 @@
 {
-  fetchgit,
+  fetchFromGitHub,
   lib,
   nix-update-script,
   perl,
@@ -9,8 +9,9 @@ rustPlatform.buildRustPackage rec {
   pname = "reth";
   version = "1.11.3";
 
-  src = fetchgit {
-    url = "https://github.com/paradigmxyz/reth";
+  src = fetchFromGitHub {
+    owner = "paradigmxyz";
+    repo = "reth";
     rev = "v${version}";
     hash = "sha256-D2hhA8Isoqu0nY425Nf2nmd1sAFYIhceUHBMmsWmH3w=";
     leaveDotGit = true;
